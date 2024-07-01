@@ -14,20 +14,19 @@ async def lifespan(app: FastAPI):
     global aiohttp_session
     aiohttp_session = aiohttp.ClientSession()
     yield
-    aiohttp_session.close()
+    await aiohttp_session.close()
 
 app = FastAPI(title="Scraping", lifespan=lifespan)
 
 # Schemas
-class HHVacanciesQueryParamsModel(BaseModel):
+class HHVacanciesQueryParamsSchema(BaseModel):
     text: str = Field("", description="Переданное значение ищется во всех полях вакансии")
     area: int = Field(113, description="Регион. Необходимо передавать id из справочника /areas. Можно указать несколько значений https://api.hh.ru/openapi/redoc#tag/Obshie-spravochniki/operation/get-areas")
     only_with_salaru: bool = Field(False, description="Показывать вакансии только с указанием зарплаты")
     per_page: int = Field(10, description="Количество элементов на странице")
     page: int = Field(0, description="Текущая страница")
-    order_by: str = Field("", description="Сортировка списка вакансий. Справочник с возможными значениями: vacancy_search_order в https://api.hh.ru/openapi/redoc#tag/Obshie-spravochniki/operation/get-dictionaries. Если выбрана сортировка по удалённости от гео-точки distance, необходимо также задать её координаты: sort_point_lat, sort_point_lng")
 
-class HHVacanciesResponseModel(BaseModel):
+class HHVacanciesResponseSchema(BaseModel):
     items: List[dict] = Field(..., description="Список с вакинсиями")
     found: int = Field(int, description="Количество найденных вакансий")
     pages: int = Field(int, description="Количество страниц")
@@ -39,7 +38,7 @@ class HHVacanciesResponseModel(BaseModel):
     suggests: None = Field(None)
     alternate_url: str = Field(str, description="Ссылка для альтернативно одаренных")
 
-class HHResumesQueryParamsModel(BaseModel):
+class HHResumesQueryParamsSchema(BaseModel):
     text: str = Field("", description="Переданное значение ищется во всех полях резюме")
     currency: str = Field("", description="Код валюты. Возможные значения перечислены в поле currency.code в https://api.hh.ru/openapi/redoc#tag/Obshie-spravochniki/operation/get-dictionaries")
     salary_from: int = Field(..., description="Нижняя граница желаемой заработной платы (ЗП). По умолчанию в выдачу добавляются также резюме с неуказанной ЗП. Для выдачи резюме только с указанной ЗП передайте параметр label=only_with_salary")
@@ -62,7 +61,7 @@ class HHResumesQueryParamsModel(BaseModel):
     page: int = Field(int, description="Текущая страница")
     per_page: int = Field(int, description="Количество отображаемых вакансий на странице")
 
-class HHResumesResponseModel(BaseModel):
+class HHResumesResponseSchema(BaseModel):
     items: List[dict] = Field(..., description="Список с резюме")
     found: str = Field(..., description="Количество найденных резюме у соискателей")
 
@@ -70,12 +69,11 @@ class HHResumesResponseModel(BaseModel):
 # urls
 hh_vacancies_url = 'https://api.hh.ru/vacancies?clusters=true'
 hh_resume_url = "https://hh.ru/search/resume?&pos=full_text&logic=normal&exp_period=all_time"
-# https://hh.ru/search/resume?text=&pos=full_text&logic=normal&exp_period=all_time&page=
 
 
-# rotes
-@app.post("/api/hh/vacancies", response_model=HHVacanciesResponseModel)
-async def get_vacancies(model: HHVacanciesQueryParamsModel,
+# routes
+@app.post("/api/hh/vacancies")
+async def get_vacancies(model: HHVacanciesQueryParamsSchema,
                         user_agent: Annotated[str | None, Header()] = None) -> dict:
     headers = {
         "User-Agent": user_agent
@@ -83,11 +81,14 @@ async def get_vacancies(model: HHVacanciesQueryParamsModel,
 
     global hh_vacancies_url
     global aiohttp_session
-    data = await async_query(session = aiohttp_session, headers=headers, url=hh_vacancies_url, model=model)
-    return data
+    try:
+        data = await async_query(session = aiohttp_session, headers=headers, url=hh_vacancies_url, model=model, json_encode="no")
+        return data
+    except:
+        print("Hello")
 
-@app.post("/api/hh/resume", response_model=HHResumesResponseModel   )
-async def get_resume(model: HHResumesQueryParamsModel,
+@app.post("/api/hh/resumes", response_model=HHResumesResponseSchema)
+async def get_resume(model: HHResumesQueryParamsSchema,
                      user_agent: Annotated[str | None, Header()] = None) -> dict:
     headers = {
         "User-Agent": user_agent
@@ -95,7 +96,7 @@ async def get_resume(model: HHResumesQueryParamsModel,
 
     global hh_resume_url
     global aiohttp_session
-    data = await async_query(session = aiohttp_session, headers=headers, url=hh_resume_url, model=model)
+    data = await async_query(session = aiohttp_session, headers=headers, url=hh_resume_url, model=model, json_encode="jsonable_encoder")
     response = await get_amount_and_items(data=data)
     return response
 

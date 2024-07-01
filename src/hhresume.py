@@ -1,23 +1,22 @@
 from bs4 import BeautifulSoup
-import asyncio
 import aiohttp
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
 
 
-url = "https://hh.ru/search/resume?"
-# https://hh.ru/search/resume?&pos=full_text&logic=normal&exp_period=all_time
-
-
-
-async def async_query(session: aiohttp.ClientSession, headers: dict, url: str, model: BaseModel) -> dict:
+async def async_query(session: aiohttp.ClientSession, headers: dict, url: str, model: BaseModel, json_encode: str = "no") -> dict:
     query_params: dict = model.__dict__
     for key, value in query_params.items():
         url += f"&{str(key)}={str(value)}"
     
     async with session.get(headers=headers, url=url) as response:
-        data = jsonable_encoder(await response.text())
-        return data
+            if json_encode == "no":
+                return await response.json()
+            
+            if json_encode == "jsonable_encoder":
+                data = jsonable_encoder(await response.text())
+                return data
+            
         
 
 async def get_amount_of_resumes_and_applicants(data) -> str:
