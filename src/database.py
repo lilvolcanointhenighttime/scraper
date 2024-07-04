@@ -2,7 +2,6 @@ from typing import Any
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy import BigInteger
 
 engine = create_async_engine(
     "postgresql+asyncpg://postgres:123@localhost:5432/"
@@ -27,16 +26,16 @@ class HHVacancyOrm(Model):
     
     id: Mapped[int] = mapped_column(primary_key=True) 
     link: Mapped[str]
-    title: Mapped[str]
-    area: Mapped[dict[str, Any]]
+    text: Mapped[str]
+    area: Mapped[int]
     salary: Mapped[dict[str, Any]]
 
-class HHResumesOrm(Model):
+class HHResumeOrm(Model):
     __tablename__ = "HHResume"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     link: Mapped[str]
-    title: Mapped[str]
+    text: Mapped[str]
     area: Mapped[int]
     age: Mapped[int]
     salary: Mapped[int]

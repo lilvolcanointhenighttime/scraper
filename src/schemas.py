@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-class HHVacanciesQueryParamsSchema(BaseModel):
+class HHVacanciesQuerySchema(BaseModel):
     text: str = Field("", description="Переданное значение ищется во всех полях вакансии")
     area: int = Field(113, description="Регион. Необходимо передавать id из справочника /areas. Можно указать несколько значений https://api.hh.ru/openapi/redoc#tag/Obshie-spravochniki/operation/get-areas")
     only_with_salaru: bool = Field(False, description="Показывать вакансии только с указанием зарплаты")
@@ -21,7 +21,7 @@ class HHVacanciesResponseSchema(BaseModel):
     suggests: None = Field(None)
     alternate_url: str = Field(str, description="Ссылка для альтернативно одаренных")
 
-class HHResumesQueryParamsSchema(BaseModel):
+class HHResumesQuerySchema(BaseModel):
     text: str = Field("", description="Переданное значение ищется во всех полях резюме")
     currency: str = Field("", description="Код валюты. Возможные значения перечислены в поле currency.code в https://api.hh.ru/openapi/redoc#tag/Obshie-spravochniki/operation/get-dictionaries")
     salary_from: int = Field(..., description="Нижняя граница желаемой заработной платы (ЗП). По умолчанию в выдачу добавляются также резюме с неуказанной ЗП. Для выдачи резюме только с указанной ЗП передайте параметр label=only_with_salary")
@@ -46,4 +46,4 @@ class HHResumesQueryParamsSchema(BaseModel):
 
 class HHResumesResponseSchema(BaseModel):
     items: List[dict] = Field(..., description="Список с резюме")
-    found: str = Field(..., description="Количество найденных резюме у соискателей")
+    found: Optional[str] = None

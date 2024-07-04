@@ -12,17 +12,14 @@ hh_router = APIRouter(
 
 
 @hh_router.get("/vacancies")
-async def get_vacancies():
+async def get_vacancies(query_params: str = Query("")):
+    if query_params:
+        params = get_params(query_params=query_params)
+        return await HHVacancyRepository.filter(params=params)
     return await HHVacancyRepository.return_all()
 
-
-@hh_router.get("/resumes")
-async def get_resumes():
-    return await HHResumesRepository.return_all()
-
-
 @hh_router.post("/vacancies", response_model=HHVacanciesResponseSchema)
-async def post_vacancies(model: HHVacanciesQueryParamsSchema,
+async def post_vacancies(model: HHVacanciesQuerySchema,
                          user_agent: Annotated[str | None, Header()] = None) -> dict:
     from .main import aiohttp_clientsession
 
@@ -31,13 +28,20 @@ async def post_vacancies(model: HHVacanciesQueryParamsSchema,
     }
     hh_vacancies_url = 'https://api.hh.ru/vacancies?cluster=true'
 
-    data = await async_query(session = aiohttp_clientsession, headers=headers, url=hh_vacancies_url, model=model, json_encode="no")
-    await HHVacancyRepository.add_one(data=data)
+    data = await async_query(session = aiohttp_clientsession, headers=headers, url=hh_vacancies_url, model=model, json_encode="no", validate_area = True)
+    await HHVacancyRepository.add(data=data)
     return data
 
 
+@hh_router.get("/resumes")
+async def get_resumes(query_params: str = Query("")):
+    if query_params:
+        params = get_params(query_params=query_params)
+        return await HHResumesRepository.filter(params=params)
+    return await HHResumesRepository.return_all()
+
 @hh_router.post("/resumes", response_model=HHResumesResponseSchema)
-async def post_resumes(model: HHResumesQueryParamsSchema,
+async def post_resumes(model: HHResumesQuerySchema,
                      user_agent: Annotated[str | None, Header()] = None) -> dict:
     from .main import aiohttp_clientsession
 
@@ -47,5 +51,5 @@ async def post_resumes(model: HHResumesQueryParamsSchema,
 
     data = await async_query(session = aiohttp_clientsession, headers=headers, url=hh_resume_url, model=model, json_encode="jsonable_encoder", add_area=True)
     response = await get_amount_and_items(data=data)
-    await HHResumesRepository.add_one(response)
+    await HHResumesRepository.add(response)
     return response

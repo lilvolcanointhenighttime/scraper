@@ -1,17 +1,16 @@
 from .database import new_session
 from .schemas import HHVacanciesResponseSchema, HHResumesResponseSchema
-from .database import HHVacancyOrm, HHResumesOrm
+from .database import HHVacancyOrm, HHResumeOrm
 from sqlalchemy import select
 
 class HHVacancyRepository():
     @classmethod
-    async def add_one(cls, data: HHVacanciesResponseSchema) -> None:
+    async def add(cls, data: HHVacanciesResponseSchema) -> None:
         async with new_session() as session:
             for vacancy in data["items"]:
                 new_vacancy = {}
-                # new_vacancy["id"] = None
                 new_vacancy["link"] = vacancy["url"]
-                new_vacancy["title"] = vacancy["name"]
+                new_vacancy["text"] = vacancy["name"]
                 new_vacancy["area"] = vacancy["area"]
                 new_vacancy["salary"] = vacancy["salary"]
 
@@ -29,13 +28,23 @@ class HHVacancyRepository():
             vacancies = result.scalars().all()
             return vacancies
         
+    @classmethod
+    async def filter(cls, params: dict):
+        async with new_session() as session:
+            querry = select(HHVacancyOrm)
+            for key, value in params.items():
+                querry = querry.filter(getattr(HHVacancyOrm, key) == value)
+                result = await session.execute(querry)
+                vacancies = result.scalars().all()
+            return vacancies
+        
 class HHResumesRepository():
     @classmethod
-    async def add_one(cls, data:HHResumesResponseSchema) -> None:
+    async def add(cls, data:HHResumesResponseSchema) -> None:
         async with new_session() as session:
             resumes_list = data["items"]
             for resume in resumes_list:
-                resumes_orm = HHResumesOrm(**resume)
+                resumes_orm = HHResumeOrm(**resume)
                 session.add(resumes_orm)
             await session.flush()
             await session.commit()
@@ -43,8 +52,17 @@ class HHResumesRepository():
     @classmethod
     async def return_all(cls):
         async with new_session() as session:
-            querry = select(HHResumesOrm)
+            querry = select(HHResumeOrm)
             result = await session.execute(querry)
-
             vacancies = result.scalars().all()
+            return vacancies
+        
+    @classmethod
+    async def filter(cls, params: dict):
+        async with new_session() as session:
+            querry = select(HHResumeOrm)
+            for key, value in params.items():
+                querry = querry.filter(getattr(HHResumeOrm, key) == value)
+                result = await session.execute(querry)
+                vacancies = result.scalars().all()
             return vacancies
