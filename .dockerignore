@@ -1,0 +1,9 @@
+../.vscode
+__pycache__
+.env.example
+.gitignore
+README.md
+.idea
+.venv/
+poetry.lock
+pyproject.toml

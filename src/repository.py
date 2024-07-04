@@ -1,6 +1,6 @@
-from .database import new_session
+from .config.database import new_session
 from .schemas import HHVacanciesResponseSchema, HHResumesResponseSchema
-from .database import HHVacancyOrm, HHResumeOrm
+from .models import HHVacancyOrm, HHResumeOrm
 from sqlalchemy import select
 
 class HHVacancyRepository():
