@@ -53,19 +53,19 @@ def validate_dict(params_dict: dict) -> dict:
     return params_dict
 
 
-def get_params(query_params: str) -> dict:
-    query_params = query_params.split("?")[1]
-    if "&" in query_params:
-        params = [param.split("=") for param in query_params.split("&")]
-        params_list = [tuple(param) for param in params]
-        params_dict = dict(params_list)
-    else:
-        params = query_params.split("=")
-        params_list = [tuple(params)]
-        params_dict = dict(params_list)
+# def get_params(query_params: str) -> dict:
+#     query_params = query_params.split("?")[1]
+#     if "&" in query_params:
+#         params = [param.split("=") for param in query_params.split("&")]
+#         params_list = [tuple(param) for param in params]
+#         params_dict = dict(params_list)
+#     else:
+#         params = query_params.split("=")
+#         params_list = [tuple(params)]
+#         params_dict = dict(params_list)
 
-    params_dict = validate_dict(params_dict=params_dict)
-    return params_dict
+#     params_dict = validate_dict(params_dict=params_dict)
+#     return params_dict
 
 
 async def get_amount_of_resumes_and_applicants(data) -> str:

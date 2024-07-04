@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск вакансий</title>
+    <link rel="stylesheet" href="../css/vacancy_post_styles.css">
+</head>
+<body>
+    <h1>Поиск вакансий</h1>
+    <form id="searchForm">
+        <input type="text" id="text" placeholder="Ключевые слова">
+        <input type="number" id="area" placeholder="Регион (номер)">
+        <label for="only_with_salary">Только с зарплатой</label>
+        <input type="checkbox" id="only_with_salary">
+        <input type="number" id="per_page" placeholder="Вакансий на странице">
+        <input type="number" id="page" placeholder="Номер страницы">
+        <button type="submit">Поиск</button>
+    </form>
+    <div id="results"></div>
+    <script src="../js/vacancy_post_script.js"></script>
+</body>
+</html>
