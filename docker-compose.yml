@@ -8,20 +8,28 @@ services:
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_HOST=localhost
       - POSTGRES_PORT=${DB_PORT}
       - POSTGRES_DB=${DB_NAME}
     expose:
       - 5432
 
   fastapi:
+    container_name: fastapi
     build:
       context: .
-      dockerfile: ./src/docker/Dockerfile.fastapi
-    container_name: fastapi
-    # env_file:
-    #   - .env
+      dockerfile: ./src/backend/docker/Dockerfile.fastapi
+    depends_on:
+      - database
     restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_DB=${DB_NAME}
     expose:
       - 8000
 
@@ -32,6 +40,6 @@ services:
     depends_on:
       - fastapi
     ports:
-      - "8080:8080"
+      - "80:80"
     volumes:
-      - .nginx/default.conf:/etc/nginx/nginx.conf:ro
+      - ./src/backend/config/.nginx/default.conf:/etc/nginx/nginx.conf:ro

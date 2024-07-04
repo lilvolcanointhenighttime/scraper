@@ -1,9 +1,6 @@
-../.vscode
-__pycache__
-.env.example
+*/__pycache__/
+**/__pycache__/
+*/venv/
+.git
 .gitignore
-README.md
-.idea
-.venv/
-poetry.lock
-pyproject.toml
+docker-compose.yaml
