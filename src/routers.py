@@ -21,7 +21,7 @@ async def get_vacancies(query_params: str = Query("")):
 @hh_router.post("/vacancies", response_model=HHVacanciesResponseSchema)
 async def post_vacancies(model: HHVacanciesQuerySchema,
                          user_agent: Annotated[str | None, Header()] = None) -> dict:
-    from .main import aiohttp_clientsession
+    from .app import aiohttp_clientsession
 
     headers = {
         "User-Agent": user_agent
@@ -43,7 +43,7 @@ async def get_resumes(query_params: str = Query("")):
 @hh_router.post("/resumes", response_model=HHResumesResponseSchema)
 async def post_resumes(model: HHResumesQuerySchema,
                      user_agent: Annotated[str | None, Header()] = None) -> dict:
-    from .main import aiohttp_clientsession
+    from .app import aiohttp_clientsession
 
     headers = {
         "User-Agent": user_agent
