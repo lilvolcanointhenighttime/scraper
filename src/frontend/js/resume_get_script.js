@@ -4,11 +4,17 @@ document.getElementById('searchForm').onsubmit = function(event) {
   var text = document.getElementById('text').value;
   var area = document.getElementById('area').value;
 
+
   if(text && area) {
     var url = `http://localhost:80/api/hh/resumes?text=${text}&area=${area}`;
-  } else {
+  } if(text) {
+    var url = `http://localhost:80/api/hh/resumes?text=${text}`;
+  } if(area) {
+    var url = `http://localhost:80/api/hh/resumes?area=${area}`;
+  }else {
     var url = 'http://localhost:80/api/hh/resumes'
   }
+
   fetch(url)
     .then(response => response.json())
     .then(data => {

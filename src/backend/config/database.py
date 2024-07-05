@@ -11,6 +11,7 @@ DB_PASSWORD = environ["DB_PASSWORD"]
 DB_HOST = environ["DB_HOST"]
 DB_PORT = environ["DB_PORT"]
 DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/"
+print(DB_URL)
 
 engine = create_async_engine(
     DB_URL
