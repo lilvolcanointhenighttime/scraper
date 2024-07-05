@@ -43,9 +43,6 @@ services:
     restart: always
     expose:
       - 8080
-    # volumes:
-    #   - ./src/frontend:/src/frontend
-    #   - nginx_frontend:/src/frontend
 
   nginx:
     image: nginx
@@ -57,7 +54,3 @@ services:
       - "80:80"
     volumes:
       - ./src/backend/config/.nginx/default.conf:/etc/nginx/nginx.conf:ro
-      # - nginx_frontend:/src/frontend/
-
-volumes:
-  nginx_frontend:
