@@ -7,6 +7,14 @@ document.getElementById('searchForm').onsubmit = function(event) {
   var per_page = document.getElementById('per_page').value;
   var page = document.getElementById('page').value;
 
+  const data = {
+    text: text,
+    area: parseInt(area),
+    only_with_salary: only_with_salary,
+    per_page: parseInt(per_page),
+    page: parseInt(page)
+  };
+
   var xhr = new XMLHttpRequest();
   xhr.open('POST', 'http://localhost:8000/api/hh/vacancies', true);
   xhr.setRequestHeader('Content-Type', 'application/json');
@@ -16,13 +24,7 @@ document.getElementById('searchForm').onsubmit = function(event) {
           displayResults(response);
       }
   };
-  xhr.send(JSON.stringify({
-      text: text,
-      area: parseInt(area),
-      only_with_salary: only_with_salary,
-      per_page: parseInt(per_page),
-      page: parseInt(page)
-  }));
+  xhr.send(JSON.stringify(data));
 };
 
 function displayResults(data) {

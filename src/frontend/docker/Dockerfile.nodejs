@@ -1,0 +1,14 @@
+FROM node:alpine
+
+# Устанавливаем рабочую директорию в контейнере
+WORKDIR .
+RUN rm -rf ./src
+RUN mkdir /src
+
+# Копируем файлы проекта в контейнер
+COPY ./src/frontend /src/frontend
+
+# Запускаем приложение
+# CMD ["ls"]
+WORKDIR ./src/frontend
+CMD ["node", "./app.js"]
