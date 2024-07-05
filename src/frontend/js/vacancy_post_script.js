@@ -29,7 +29,7 @@ document.getElementById('searchForm').onsubmit = function(event) {
 
 function displayResults(data) {
   var results = document.getElementById('results');
-  results.innerHTML = ''; // Очистка предыдущих результатов
+  results.innerHTML = '';
 
   data.items.forEach(function(item) {
       var card = document.createElement('div');
