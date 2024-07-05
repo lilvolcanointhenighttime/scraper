@@ -6,7 +6,11 @@ document.getElementById('searchForm').onsubmit = function(event) {
 
   if(text && area) {
     var url = `http://localhost:80/api/hh/vacancies?text=${text}&area=${area}`;
-  } else {
+  } if(text) {
+    var url = `http://localhost:80/api/hh/vacancies?text=${text}`;
+  } if(area) {
+    var url = `http://localhost:80/api/hh/vacancies?area=${area}`;
+  }else {
     var url = 'http://localhost:80/api/hh/vacancies'
   }
   fetch(url)
