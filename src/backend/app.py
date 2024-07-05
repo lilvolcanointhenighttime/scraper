@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 
 
 
-app = FastAPI(title="Scraping", lifespan=lifespan)
+app = FastAPI(title="Scraping", lifespan=lifespan, root_path="/api")
 
 origins = ["*"]
 
@@ -32,7 +32,7 @@ app.add_middleware(
     allow_headers=['*'])
 
 
-app.include_router(hh_router, prefix="/api")
+app.include_router(hh_router)
 
 
 
