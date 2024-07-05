@@ -5,9 +5,9 @@ document.getElementById('searchForm').onsubmit = function(event) {
   var area = document.getElementById('area').value;
 
   if(text && area) {
-    var url = `http://localhost:8000/api/hh/vacancies?text=${text}&area=${area}`;
+    var url = `http://localhost:80/api/hh/vacancies?text=${text}&area=${area}`;
   } else {
-    var url = 'http://localhost:8000/api/hh/vacancies'
+    var url = 'http://localhost:80/api/hh/vacancies'
   }
   fetch(url)
     .then(response => response.json())
