@@ -1,68 +1,80 @@
 document.getElementById('searchForm').addEventListener('submit', function(event) {
   event.preventDefault();
   
-  const searchText = document.getElementById('searchText').value;
+  const searchText = document.getElementById('text').value;
   const currency = document.getElementById('currency').value;
   const salaryFrom = document.getElementById('salaryFrom').value;
   const salaryTo = document.getElementById('salaryTo').value;
-  const area = document.getElementById('area');
-  const label = document.getElementById('label');
-  const age_from = document.getElementById('age_from');
-  const age_to = document.getElementById('age_to');
-  const relocation = document.getElementById('relocation');
-  const period = document.getElementById('period');
-  const education_level = document.getElementById('education_level');
-  const employment = document.getElementById('employment');
-  const skill = document.getElementById('skill');
-  const gender = document.getElementById('gender');
-  const language = document.getElementById('language');
-  const schedule = document.getElementById('schedule');
-  const order_by = document.getElementById('order_by');
-  const citizenship = document.getElementById('citizenship');
-  const work_ticket = document.getElementById('work_ticket');
-  const page = document.getElementById('page');
-  const per_page = document.getElementById('per_page');
+  const area = document.getElementById('area').value;
+  const label = document.getElementById('label').value;
+  const age_from = document.getElementById('age_from').value;
+  const age_to = document.getElementById('age_to').value;
+  const page = document.getElementById('page').value;
+  const per_page = document.getElementById('per_page').value;
 
   const data = {
       text: searchText,
       currency: currency,
-      salary_from: salaryFrom,
-      salary_to: salaryTo,
-      area : area,
+      salary_from: parseInt(salaryFrom),
+      salary_to: parseInt(salaryTo),
+      area : parseInt(area),
       label : label,
-      age_from : age_from,
-      age_to : age_to,
-      relocation : relocation,
-      period : period,
-      education_level : education_level,
-      employment : employment,
-      skill : skill,
-      gender : gender,
-      language : language,
-      schedule : schedule,
-      order_by : order_by,
-      citizenship : citizenship,
-      work_ticket : work_ticket,
-      page : page,
-      per_page : per_page,
+      age_from : parseInt(age_from),
+      age_to : parseInt(age_to),
+      page : parseInt(page),
+      per_page : parseInt(per_page),
   };
 
-  fetch('http://localhost:8000/api/hh/resumes', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-      const resultsElement = document.getElementById('results');
-      resultsElement.innerHTML = ''; // Очистить предыдущие результаты
-      data.items.forEach(item => {
-          const div = document.createElement('div');
-          div.innerHTML = `Резюме: ${item.text} - ЗП: ${item.salary}`;
-          resultsElement.appendChild(div);
-      });
-  })
-  .catch(error => console.error('Ошибка:', error));
-});
+var xhr = new XMLHttpRequest();
+  xhr.open('POST', 'http://localhost:8000/api/hh/resumes', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+          var response = JSON.parse(xhr.responseText);
+          displayResults(response);
+      }
+  };
+  xhr.send(JSON.stringify(data));
+
+function displayResults(data) {
+  var results = document.getElementById('results');
+  results.innerHTML = '';
+
+  var found = document.createElement('h1');
+  found.textContent = data.found;
+  results.appendChild(found);
+
+  data.items.forEach(function(item) {
+    var card = document.createElement('div');
+    card.className = 'vacancy-card';
+
+
+    var text = document.createElement('h2');
+    text.textContent = item.text;
+    card.appendChild(text);
+
+    var area = document.createElement('p');
+    area.textContent = 'Область: ' + (item.area);
+    card.appendChild(area);
+
+    var age = document.createElement('p');
+    age.textContent = 'Возраст: ' + (item.age);
+    card.appendChild(age);
+
+    var salary = document.createElement('p');
+    salary.textContent = 'Зарплата: ' + (item.salary);
+    card.appendChild(salary);
+
+    var experience = document.createElement('p');
+    experience.textContent = 'Опыт: ' + (item.experience);
+    card.appendChild(experience);
+
+    var applyLink = document.createElement('a');
+    applyLink.href = item.link;
+    applyLink.textContent = 'Просмотреть резюме';
+    applyLink.target = '_blank';
+    card.appendChild(applyLink);
+
+    results.appendChild(card);
+  });
+}});
