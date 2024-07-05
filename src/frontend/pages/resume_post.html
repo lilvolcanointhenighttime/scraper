@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск Резюме</title>
+    <link rel="stylesheet" href="../css/index_vacancy_resume_post_styles.css">
+</head>
+<body>
+    <h1>Поиск Резюме</h1>
+    <form id="searchForm">
+        <label for="text">Ключевые слова</label>
+        <input type="text" id="text" placeholder="Ключевые слова" value="" aria-label="Текст">
+
+        <label for="currency">Код валюты</label>
+        <input type="text" id="currency" placeholder="Код валюты" value="">
+
+        <label for="salaryFrom">ЗП от</label>
+        <input type="number" id="salaryFrom" placeholder="ЗП от" value=0>
+
+        <label for="salaryTo">ЗП до</label>
+        <input type="number" id="salaryTo" placeholder="ЗП до" value=0>
+
+        <label for="area">Область</label>
+        <input type="number" id="area" placeholder="область" value=113>
+
+        <label for="label">Label</label>
+        <input type="text" id="label" placeholder="Текст" value="">
+
+        <label for="age_from">Возрраст от</label>
+        <input type="number" id="age_from" placeholder="возрраст от" value=0>
+
+        <label for="age_to">Возраст до</label>
+        <input type="number" id="age_to" placeholder="возраст до" value=0>
+
+        <label for="page">Страница</label>
+        <input type="number" id="page" placeholder="Страница" value=0>
+
+        <label for="per_page">Элементов на странице</label>
+        <input type="number" id="per_page" placeholder="Элементов на странице" value=10>
+
+        <button type="submit">Поиск</button>
+    </form>
+    <div id="results"></div>
+    <script src="../js/resume_post_script.js"></script>
+</body>
+</html>

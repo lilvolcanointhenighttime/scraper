@@ -12,10 +12,10 @@ hh_router = APIRouter(
 
 
 @hh_router.get("/vacancies")
-async def get_vacancies(query_params: str = Query("")):
-    if query_params:
-        params = get_params(query_params=query_params)
-        return await HHVacancyRepository.filter(params=params)
+async def get_vacancies(text: str | None = None, area: int | None = None):
+    query_params = {'text': text, 'area': area}
+    if text or area:
+        return await HHVacancyRepository.filter(params=query_params)
     return await HHVacancyRepository.return_all()
 
 @hh_router.post("/vacancies", response_model=HHVacanciesResponseSchema)
@@ -34,10 +34,10 @@ async def post_vacancies(model: HHVacanciesQuerySchema,
 
 
 @hh_router.get("/resumes")
-async def get_resumes(query_params: str = Query("")):
-    if query_params:
-        params = get_params(query_params=query_params)
-        return await HHResumesRepository.filter(params=params)
+async def get_resumes(text: str | None = None, area: int | None = None):
+    query_params = {'text': text, 'area': area}
+    if text or area:
+        return await HHResumesRepository.filter(params=query_params)
     return await HHResumesRepository.return_all()
 
 @hh_router.post("/resumes", response_model=HHResumesResponseSchema)

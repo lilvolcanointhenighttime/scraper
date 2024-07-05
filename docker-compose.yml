@@ -27,11 +27,22 @@ services:
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_HOST=database
       - POSTGRES_PORT=${DB_PORT}
       - POSTGRES_DB=${DB_NAME}
     expose:
       - 8000
+  
+  nodejs:
+    container_name: nodejs
+    build:
+      context: .
+      dockerfile: ./src/frontend/docker/Dockerfile.nodejs
+    depends_on:
+      - nginx
+    restart: always
+    expose:
+      - 8080
 
   nginx:
     image: nginx
