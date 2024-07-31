@@ -1,9 +1,9 @@
 version: "3.5"
 
 services:
-  database:
+  pg:
     image: postgres:latest
-    container_name: database
+    container_name: pg
     restart: always
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -20,14 +20,14 @@ services:
       context: .
       dockerfile: ./src/backend/docker/Dockerfile.fastapi
     depends_on:
-      - database
+      - pg
     restart: always
     env_file:
       - .env
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_HOST=database
+      - POSTGRES_HOST=pg
       - POSTGRES_PORT=${DB_PORT}
       - POSTGRES_DB=${DB_NAME}
     expose:
@@ -45,12 +45,12 @@ services:
       - 8080
 
   nginx:
-    image: nginx
     container_name: nginx
+    build:
+      context: .
+      dockerfile: ./src/backend/docker/Dockerfile.nginx
     restart: always
     depends_on:
       - fastapi
     ports:
       - "80:80"
-    volumes:
-      - ./src/backend/config/.nginx/default.conf:/etc/nginx/nginx.conf:ro
