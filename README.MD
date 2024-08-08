@@ -3,12 +3,12 @@
 
 2. Deployment
 
-. docker-compose deployment
+docker-compose deployment
 ```
 docker-compose up -d
 ```
 
-. k8s deployment(minikube)
+k8s deployment(minikube)
 ```
 kubectl create secret generic env --from-env-file=.env
 
