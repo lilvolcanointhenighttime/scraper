@@ -22,7 +22,7 @@ kubectl apply -f ./src/ops/.kube/
 kubectl get ing
 ```
 
-edit your local dns(hosts) pasting "domain ADDRESS" value
+    edit your local dns(hosts) pasting "domain ADDRESS" value
 
 ```
 minikube tunnel
