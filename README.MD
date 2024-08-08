@@ -23,7 +23,7 @@ kubectl get ing
 ```
 
 edit your local dns(hosts) pasting "domain ADDRESS" value
-```
 
+```
 minikube tunnel
 ```
