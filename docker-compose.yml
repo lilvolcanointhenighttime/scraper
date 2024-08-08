@@ -1,9 +1,9 @@
 version: "3.5"
 
 services:
-  pg-svc:
+  pg:
     image: postgres:latest
-    container_name: pg-svc
+    container_name: pg
     restart: always
     environment:
       - POSTGRES_USER=${DB_USER}

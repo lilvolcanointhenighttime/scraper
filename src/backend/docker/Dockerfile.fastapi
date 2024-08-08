@@ -9,4 +9,4 @@ COPY ./src/backend/config/req.txt /src/req.txt
 RUN python -m pip install -r ./src/req.txt
 
 COPY ./src/backend /src/
-CMD ["uvicorn", "src.app:app", "--host=localhost", "--port=8000"]
+CMD ["uvicorn", "src.app:app", "--host=0.0.0.0", "--port=8000"]
