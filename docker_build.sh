@@ -3,9 +3,9 @@ bash
 
 declare -A docker_images
 docker_images=(
-    ["fastapi_app:slim"]="./src/backend/docker/Dockerfile.fastapi"
-    ["nodejs_app:alpine"]="./src/frontend/docker/Dockerfile.nodejs"
-    ["nginx"]="/src/backend/docker/Dockerfile.nginx"
+    ["praktika_leto-fastapi:latest"]="./src/backend/docker/Dockerfile.fastapi"
+    ["praktika_leto-nodejs:latest"]="./src/frontend/docker/Dockerfile.nodejs"
+    ["praktika_leto-nginx:latest"]="/src/backend/docker/Dockerfile.nginx"
 )
 
 for key in "${!docker_images[@]}"
