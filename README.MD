@@ -19,6 +19,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 minikube start
 minikube addons enable ingress
 minikube addons enable ingress-dns
+```
 
 Build docker images
 ```
@@ -30,6 +31,7 @@ minikube image load praktika_leto-nodejs:latest
 minikube image load praktika_leto-nginx:latest
 ```
 
+```
 kubectl apply -f ./src/ops/.kube/
 kubectl get ing
 ```
