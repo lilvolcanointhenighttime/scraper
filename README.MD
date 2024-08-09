@@ -1,7 +1,8 @@
 ## Quick Start
 1. Fill .env.example and rename it to .env
 
-2. Deployment
+
+2. Deployment:
 
 docker-compose deployment
 ```
@@ -9,6 +10,7 @@ docker-compose up -d
 ```
 
 k8s deployment(minikube)
+
 ```
 kubectl create secret generic env --from-env-file=.env
 
@@ -17,6 +19,16 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 minikube start
 minikube addons enable ingress
 minikube addons enable ingress-dns
+
+Build docker images
+```
+chmod +x ./docker_build.sh
+./docker_build.sh
+
+minikube image load praktika_leto-fastapi:latest
+minikube image load praktika_leto-nodejs:latest
+minikube image load praktika_leto-nginx:latest
+```
 
 kubectl apply -f ./src/ops/.kube/
 kubectl get ing
