@@ -1,17 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from ..models import Model
-from dotenv import load_dotenv
-from os import environ
 
-load_dotenv()
-
-DB_NAME = environ["DB_NAME"]
-DB_USER = environ["DB_USER"]
-DB_PASSWORD = environ["DB_PASSWORD"]
-DB_HOST = environ["DB_HOST"]
-DB_PORT = environ["DB_PORT"]
-DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/"
-print(DB_URL)
+from .env import DB_URL
 
 engine = create_async_engine(
     DB_URL

@@ -5,13 +5,13 @@ document.getElementById('searchForm').onsubmit = function(event) {
   var area = document.getElementById('area').value;
 
   if(text && area) {
-    var url = `http://localhost:80/api/hh/vacancies?text=${text}&area=${area}`;
+    var url = `http://localhost:80/api/scraper/hh/vacancies?text=${text}&area=${area}`;
   } if(text) {
-    var url = `http://localhost:80/api/hh/vacancies?text=${text}`;
+    var url = `http://localhost:80/api/scraper/hh/vacancies?text=${text}`;
   } if(area) {
-    var url = `http://localhost:80/api/hh/vacancies?area=${area}`;
+    var url = `http://localhost:80/api/scraper/hh/vacancies?area=${area}`;
   }else {
-    var url = 'http://localhost:80/api/hh/vacancies'
+    var url = 'http://localhost:80/api/scraper/hh/vacancies'
   }
   fetch(url)
     .then(response => response.json())

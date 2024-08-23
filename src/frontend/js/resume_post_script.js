@@ -26,7 +26,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
   };
 
 var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:80/api/hh/resumes', true);
+  xhr.open('POST', 'http://localhost:80/api/scraper/hh/resumes', true);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function() {
       if (xhr.readyState == 4 && xhr.status == 200) {

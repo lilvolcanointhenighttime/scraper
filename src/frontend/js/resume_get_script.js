@@ -6,13 +6,13 @@ document.getElementById('searchForm').onsubmit = function(event) {
 
 
   if(text && area) {
-    var url = `http://localhost:80/api/hh/resumes?text=${text}&area=${area}`;
+    var url = `http://localhost:80/api/scraper/hh/resumes?text=${text}&area=${area}`;
   } if(text) {
-    var url = `http://localhost:80/api/hh/resumes?text=${text}`;
+    var url = `http://localhost:80/api/scraper/hh/resumes?text=${text}`;
   } if(area) {
-    var url = `http://localhost:80/api/hh/resumes?area=${area}`;
+    var url = `http://localhost:80/api/scraper/hh/resumes?area=${area}`;
   }else {
-    var url = 'http://localhost:80/api/hh/resumes'
+    var url = 'http://localhost:80/api/scraper/hh/resumes'
   }
 
   fetch(url)

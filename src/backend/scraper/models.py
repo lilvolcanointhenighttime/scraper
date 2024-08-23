@@ -3,6 +3,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSON
 
 
+
 class Model(DeclarativeBase):
     type_annotation_map = {
         dict[str, Any]: JSON

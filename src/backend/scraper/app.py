@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 
 
 
-app = FastAPI(title="Scraping", lifespan=lifespan, root_path="/api")
+app = FastAPI(title="Scraping", lifespan=lifespan, root_path="/api/scraper")
 
 origins = ["*"]
 

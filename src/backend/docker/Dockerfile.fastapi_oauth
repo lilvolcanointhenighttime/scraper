@@ -1,0 +1,12 @@
+from python:3.12.4-slim
+
+LABEL name="fastapi_oauth"
+
+WORKDIR .
+RUN mkdir /src
+
+COPY ./src/backend/oauth/config/req.txt /src/req.txt
+RUN python -m pip install -r ./src/req.txt
+
+COPY ./src/backend/oauth /src/
+CMD ["uvicorn", "src.app:app", "--host=0.0.0.0", "--port=8800"]
