@@ -76,3 +76,5 @@ services:
       - fastapi_oauth
     ports:
       - "80:80"
+
+    

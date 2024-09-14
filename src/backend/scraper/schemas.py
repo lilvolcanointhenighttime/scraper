@@ -2,6 +2,10 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
+class OauthLoginSchema(BaseModel):
+    id: int
+    string: str
+
 class HHVacanciesQuerySchema(BaseModel):
     text: str = Field("", description="Переданное значение ищется во всех полях вакансии")
     area: int = Field(113, description="Регион. Необходимо передавать id из справочника /areas. Можно указать несколько значений https://api.hh.ru/openapi/redoc#tag/Obshie-spravochniki/operation/get-areas")

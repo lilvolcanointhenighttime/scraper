@@ -8,6 +8,11 @@ hh_vacancies_url = 'https://api.hh.ru/vacancies?clusters=true'
 hh_resume_url = "https://hh.ru/search/resume?&pos=full_text&logic=normal&exp_period=all_time"
 
 
+async def async_query_post(session: aiohttp.ClientSession, url: str, headers: dict = {}, params: dict = {}) -> dict:
+    async with session.post(headers=headers, url=url, params=params) as response:
+        data = await response.json()
+        return data
+
 async def async_query(session: aiohttp.ClientSession, headers: dict, url: str, model: BaseModel, json_encode: str = "no", add_area: bool = False, validate_area: bool = False) -> dict:
     query_params: dict = model.__dict__
 

@@ -13,6 +13,11 @@ function serveFile(filePath, contentType, response) {
                 response.end('Sorry, check with the site admin for error: ' + error.code + ' ..\n');
             }
         } else {
+            // Установка CORS заголовков
+            response.setHeader('Access-Control-Allow-Origin', '*');
+            response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
             response.writeHead(200, { 'Content-Type': contentType });
             response.end(content, 'utf-8');
         }
@@ -20,6 +25,16 @@ function serveFile(filePath, contentType, response) {
 }
 
 http.createServer((request, response) => {
+    // Обработка предзапросов
+    if (request.method === 'OPTIONS') {
+        response.setHeader('Access-Control-Allow-Origin', '*');
+        response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        response.writeHead(204); // No Content
+        response.end();
+        return;
+    }
+
     let filePath = '.' + request.url;
     if (filePath === './') {
         filePath = './index.html';
@@ -47,7 +62,6 @@ http.createServer((request, response) => {
     const contentType = mimeTypes[extname] || 'application/octet-stream';
 
     serveFile(filePath, contentType, response);
-
 }).listen(8080);
 
 console.log('Server running at http://localhost:8080/');
