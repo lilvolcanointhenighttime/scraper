@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Login</title>    
 </head>
 <body>
     <script src="../js/login.js"></script>
     <h1>Login page</h1>
-    <button onclick="loginWithGitHub()">Login with GitHub</button>
-    <button onclick="logout()">Logout</button>
-    <div id="user-info"></div>
+    <div id="main">
+        <div id="user-info"></div>
+        <button onclick="loginWithGitHub()">Login with GitHub</button>
+        <button onclick="logout()">Logout</button>
+        <a href="http://localhost" role="button">
+            <button>На главную</button>
+        </a>
+    </div>
 </body>
 </html>

@@ -2,9 +2,10 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-class OauthLoginSchema(BaseModel):
+class UserSchema(BaseModel):
     id: int
-    string: str
+    login: str
+    avatar_url: str
 
 class HHVacanciesQuerySchema(BaseModel):
     text: str = Field("", description="Переданное значение ищется во всех полях вакансии")

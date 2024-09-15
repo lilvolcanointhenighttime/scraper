@@ -17,6 +17,10 @@ async function getCurrentUser() {
             var img = document.createElement('img');
             img.src = `${avatar_url}`;
             img.alt = 'Фото профиля';
+            img.style.width = '100px';
+            img.style.height = '100px';
+            img.style.border = '2px solid #ccc';
+            img.style.objectFit = 'cover';
             
             userInfo.innerText = `${login}`
             userInfo.appendChild(img)

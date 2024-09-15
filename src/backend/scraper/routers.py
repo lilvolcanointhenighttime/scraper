@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Header, Query
+from fastapi import APIRouter, Header, Depends
+from typing import Annotated
+
 from .utils import *
 from .schemas import *
 from .repository import HHVacancyRepository, HHResumesRepository
-from typing import Annotated
+from .rabbitmq import get_user
+
 
 
 hh_router = APIRouter(
@@ -12,7 +15,7 @@ hh_router = APIRouter(
 
 
 @hh_router.get("/vacancies")
-async def get_vacancies(text: str | None = None, area: int | None = None):
+async def get_vacancies(text: str | None = None, area: int | None = None, user: UserSchema = Depends(get_user)):
     query_params = {'text': text, 'area': area}
     if text or area:
         return await HHVacancyRepository.filter(params=query_params)
