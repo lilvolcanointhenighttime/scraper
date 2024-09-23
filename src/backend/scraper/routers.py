@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Header, Depends
+import json
+
+from fastapi import APIRouter, Request, Header, Depends
 from typing import Annotated
 
+from .models import UserOrm
 from .utils import *
 from .schemas import *
 from .repository import HHVacancyRepository, HHResumesRepository
-from .rabbitmq import get_user
+from .producer import get_connection, produce_message
 
 
 
@@ -13,9 +16,29 @@ hh_router = APIRouter(
     tags=["HeadHunder"]
 )
 
+user_router = APIRouter(
+    prefix="/user",
+    tags=["User"]
+)
+
+@user_router.get("/get-me")
+async def get_me(user_data: UserOrm = Depends(get_current_user)):
+    return user_data
+
+@user_router.post("/me")
+async def get_me(request: Request):
+    token = request.cookies.get('users_access_token')
+    
+    with get_connection() as connection:
+        with connection.channel() as channel:
+            body = json.dumps(token)
+            produce_message(channel=channel, method="user_info", body=body)
+
 
 @hh_router.get("/vacancies")
-async def get_vacancies(text: str | None = None, area: int | None = None, user: UserSchema = Depends(get_user)):
+async def get_vacancies(user_data: UserOrm = Depends(get_current_user), 
+                        text: str | None = None, 
+                        area: int | None = None):
     query_params = {'text': text, 'area': area}
     if text or area:
         return await HHVacancyRepository.filter(params=query_params)
@@ -23,7 +46,8 @@ async def get_vacancies(text: str | None = None, area: int | None = None, user: 
 
 @hh_router.post("/vacancies", response_model=HHVacanciesResponseSchema)
 async def post_vacancies(model: HHVacanciesQuerySchema,
-                         user_agent: Annotated[str | None, Header()] = None) -> dict:
+                         user_agent: Annotated[str | None, Header()] = None,
+                         user_data: UserOrm = Depends(get_current_user)) -> dict:
     from .app import aiohttp_clientsession
 
     headers = {
@@ -37,7 +61,9 @@ async def post_vacancies(model: HHVacanciesQuerySchema,
 
 
 @hh_router.get("/resumes")
-async def get_resumes(text: str | None = None, area: int | None = None):
+async def get_resumes(user_data: UserOrm = Depends(get_current_user),
+                      text: str | None = None, 
+                      area: int | None = None):
     query_params = {'text': text, 'area': area}
     if text or area:
         return await HHResumesRepository.filter(params=query_params)
@@ -45,7 +71,8 @@ async def get_resumes(text: str | None = None, area: int | None = None):
 
 @hh_router.post("/resumes", response_model=HHResumesResponseSchema)
 async def post_resumes(model: HHResumesQuerySchema,
-                     user_agent: Annotated[str | None, Header()] = None) -> dict:
+                       user_data: UserOrm = Depends(get_current_user),
+                       user_agent: Annotated[str | None, Header()] = None) -> dict:
     from .app import aiohttp_clientsession
 
     headers = {

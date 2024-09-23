@@ -5,12 +5,12 @@ async function loginWithGitHub() {
 
 async function getCurrentUser() {
     var userInfo = document.getElementById('user-info');
-    const response = await fetch('http://localhost:80/api/oauth/cookie/me/', {
+    const response1 = await fetch('http://localhost:80/api/oauth/cookie/me', {
         method: 'POST',
         credentials: 'include'
     });
-    if (response.ok) {
-            const userData = await response.json();
+    if (response1.ok) {
+            const userData = await response1.json();
             const user = userData[0];
             const { login, id, avatar_url } = user;
 
@@ -28,18 +28,22 @@ async function getCurrentUser() {
     else {
         userInfo.innerText = 'User not logged in';
     }
+    const response2 = await fetch('http://localhost:80/api/scraper/user/me', {
+        method: 'POST',
+        credentials: 'include'
+    });
 }
 
 async function logout() {
     var userInfo = document.getElementById('user-info');
-    const me_response = await fetch('http://localhost:80/api/oauth/cookie/me/', {
+    const me_response = await fetch('http://localhost:80/api/oauth/cookie/me', {
         method: 'POST',
         credentials: 'include'
     });
     if (!me_response.ok) {
         userInfo.innerText = 'User not logged in!'
     } else {
-        const response = await fetch('http://localhost:80/api/oauth/cookie/logout/', {
+        const response = await fetch('http://localhost:80/api/oauth/cookie/logout', {
         method: 'POST',
         credentials: 'include'
     });

@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import aiohttp
-from .routers import hh_router
+from .routers import hh_router, user_router
 from .config.database import create_tables, drop_tables
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -33,6 +33,7 @@ app.add_middleware(
 
 
 app.include_router(hh_router)
+app.include_router(user_router)
 
 
 

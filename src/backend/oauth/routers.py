@@ -19,11 +19,16 @@ async def create_cookie(id: int):
     response.set_cookie(key="users_access_token", value=access_token, httponly=True)
     return response
 
-@cookie_router.post("/me/")
+@cookie_router.post("/me")
 async def get_me(user_data: UserOrm = Depends(get_current_user)):
     return user_data
 
-@cookie_router.post("/logout/")
+@cookie_router.post("/rmq-me")
+async def rmq_get_me(token: str):
+    user_data = await get_current_user(token=token)
+    return user_data
+
+@cookie_router.post("/logout")
 async def logout_user(response: Response):
     response.delete_cookie(key="users_access_token")
     return {'message': 'Пользователь успешно вышел из системы'}
