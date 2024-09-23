@@ -1,16 +1,33 @@
 version: "3.5"
 
 services:
-  pg:
+  pg_oauth:
     image: postgres:latest
-    container_name: pg
+    container_name: pg_oauth
     restart: always
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_HOST=localhost
-      - POSTGRES_PORT=${DB_PORT}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${POSTGRES_USER_OAUTH}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_OAUTH}
+      - POSTGRES_HOST=${POSTGRES_HOST_OAUTH}
+      - POSTGRES_PORT=${POSTGRES_PORT_OAUTH}
+      - POSTGRES_DB=${POSTGRES_DB_OAUTH}
+    expose:
+      - 5432
+
+  pg_scraper:
+    image: postgres:latest
+    container_name: pg_scraper
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER_SCRAPER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_SCRAPER}
+      - POSTGRES_HOST=${POSTGRES_HOST_SCRAPER}
+      - POSTGRES_PORT=${POSTGRES_PORT_SCRAPER}
+      - POSTGRES_DB=${POSTGRES_DB_SCRAPER}
     expose:
       - 5432
 
@@ -19,17 +36,18 @@ services:
     build:
       context: .
       dockerfile: ./src/backend/docker/Dockerfile.fastapi_scraper
+    command: 'uvicorn src.app:app --host=0.0.0.0 --port=8000'
     depends_on:
-      - pg
+      - pg_scraper
     restart: always
     env_file:
       - .env
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_HOST=pg
-      - POSTGRES_PORT=${DB_PORT}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${POSTGRES_USER_SCRAPER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_SCRAPER}
+      - POSTGRES_HOST=${POSTGRES_HOST_SCRAPER_FASTAPI}
+      - POSTGRES_PORT=${POSTGRES_PORT_SCRAPER}
+      - POSTGRES_DB=${POSTGRES_DB_SCRAPER}
     expose:
       - 8000
   
@@ -38,22 +56,60 @@ services:
     build:
       context: .
       dockerfile: ./src/backend/docker/Dockerfile.fastapi_oauth
+    command: 'uvicorn src.app:app --host=0.0.0.0 --port=8800'
     depends_on:
-      - pg
+      - pg_oauth
     restart: always
     env_file:
       - .env
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_HOST=pg
-      - POSTGRES_PORT=${DB_PORT}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${POSTGRES_USER_OAUTH}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_OAUTH}
+      - POSTGRES_HOST=${POSTGRES_HOST_OAUTH_FASTAPI}
+      - POSTGRES_PORT=${POSTGRES_PORT_OAUTH}
+      - POSTGRES_DB=${POSTGRES_DB_OAUTH}
       - GITHUB_CLINET_ID=${GITHUB_CLINET_ID}
       - GITHUB_CLINET_SECRET=${GITHUB_CLINET_SECRET}
     expose:
       - 8800
 
+  fastapi_oauth_consumer:
+    container_name: fastapi_oauth_consumer
+    build:
+      context: .
+      dockerfile: ./src/backend/docker/Dockerfile.fastapi_oauth
+    command: 'python -u -m src.consumer'
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER_OAUTH}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_OAUTH}
+      - POSTGRES_HOST=${POSTGRES_HOST_OAUTH_FASTAPI}
+      - POSTGRES_PORT=${POSTGRES_PORT_OAUTH}
+      - POSTGRES_DB=${POSTGRES_DB_OAUTH}
+      - GITHUB_CLINET_ID=${GITHUB_CLINET_ID}
+      - GITHUB_CLINET_SECRET=${GITHUB_CLINET_SECRET}
+
+  fastapi_scraper_consumer:
+    container_name: fastapi_scraper_consumer
+    build:
+      context: .
+      dockerfile: ./src/backend/docker/Dockerfile.fastapi_scraper
+    command: 'python -u -m src.consumer'
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER_SCRAPER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_SCRAPER}
+      - POSTGRES_HOST=${POSTGRES_HOST_SCRAPER_FASTAPI}
+      - POSTGRES_PORT=${POSTGRES_PORT_SCRAPER}
+      - POSTGRES_DB=${POSTGRES_DB_SCRAPER}
+    depends_on:
+      - rabbitmq
+      - fastapi_scraper
+    
   nodejs:
     container_name: nodejs
     build:
@@ -66,20 +122,19 @@ services:
       - 8080
 
   rabbitmq:
-    image: rabbitmq:3.10.7-management
+    image: rabbitmq:3-management-alpine
     hostname: rabbitmq
-    restart: always
+    container_name: rabbitmq
     env_file:
       - .env
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
-    volumes:
-      - ./src/rabbitmq:/var/lib/rabbitmq
-    expose:
-      - 15672
-      - 5672
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    # volumes:
+    #   - rabbitmq-data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
   nginx:
     container_name: nginx
