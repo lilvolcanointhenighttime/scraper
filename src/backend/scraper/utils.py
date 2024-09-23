@@ -1,12 +1,43 @@
-from bs4 import BeautifulSoup
 import aiohttp
+import functools
+import asyncio
+
+from bs4 import BeautifulSoup
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
+
+from .repository import UserRepository
+
+from fastapi import HTTPException, Request, status
 
 # urls
 hh_vacancies_url = 'https://api.hh.ru/vacancies?clusters=true'
 hh_resume_url = "https://hh.ru/search/resume?&pos=full_text&logic=normal&exp_period=all_time"
 
+def sync(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        return asyncio.get_event_loop().run_until_complete(f(*args, **kwargs))
+    return wrapper
+
+async def async_query_post(session: aiohttp.ClientSession, url: str, headers: dict = {}, params: dict = {}) -> dict:
+    async with session.post(headers=headers, url=url, params=params) as response:
+        data = await response.json()
+        return data
+    
+async def get_current_user(request: Request):
+    from .app import aiohttp_clientsession
+    token = request.cookies.get('users_access_token')
+    params = {"token": token}
+    user_data = await async_query_post(session=aiohttp_clientsession, url="http://nginx/api/oauth/cookie/rmq-me", params=params)
+    if user_data == {'detail': 'Token not found'} or user_data == {'detail': 'Not Found'} or user_data == {'detail': 'User not found'}:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='User not authenticated')
+    
+    user_data = user_data[0]
+    user = await UserRepository.filter(user_data)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='User not found')
+    return user
 
 async def async_query(session: aiohttp.ClientSession, headers: dict, url: str, model: BaseModel, json_encode: str = "no", add_area: bool = False, validate_area: bool = False) -> dict:
     query_params: dict = model.__dict__

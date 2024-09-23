@@ -6,17 +6,27 @@ document.getElementById('searchForm').onsubmit = function(event) {
 
 
   if(text && area) {
-    var url = `http://localhost:80/api/hh/resumes?text=${text}&area=${area}`;
+    var url = `http://localhost:80/api/scraper/hh/resumes?text=${text}&area=${area}`;
   } if(text) {
-    var url = `http://localhost:80/api/hh/resumes?text=${text}`;
+    var url = `http://localhost:80/api/scraper/hh/resumes?text=${text}`;
   } if(area) {
-    var url = `http://localhost:80/api/hh/resumes?area=${area}`;
+    var url = `http://localhost:80/api/scraper/hh/resumes?area=${area}`;
   }else {
-    var url = 'http://localhost:80/api/hh/resumes'
+    var url = 'http://localhost:80/api/scraper/hh/resumes'
   }
 
   fetch(url)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          alert('Пользователь не авторизован!');
+          window.location.href = 'http://localhost/pages/login.html'
+        } else {
+          alert('Произошла ошибка при выполнении запроса. Код ошибки: ' + response.status);
+        }
+    }
+    return response.json();
+    })
     .then(data => {
         displayResults(data);
     })
