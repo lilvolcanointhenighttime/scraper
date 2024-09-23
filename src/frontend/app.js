@@ -60,7 +60,6 @@ http.createServer((request, response) => {
     };
 
     const contentType = mimeTypes[extname] || 'application/octet-stream';
-
     serveFile(filePath, contentType, response);
 }).listen(8080);
 
