@@ -26,7 +26,14 @@ Build docker images
 ```
 chmod +x ./docker_build.sh
 ./docker_build.sh
+```
+or just run
+```
+docker-compose up -d
+docker-compose down
+```
 
+```
 minikube image load praktika_leto-fastapi_scraper:latest
 minikube image load praktika_leto-fastapi_oauth:latest
 minikube image load praktika_leto-nodejs:latest
