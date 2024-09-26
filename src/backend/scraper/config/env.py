@@ -2,11 +2,17 @@ from dotenv import load_dotenv
 from os import environ
 
 load_dotenv()
-DB_USER = environ["POSTGRES_USER"]
-DB_PASSWORD = environ["POSTGRES_PASSWORD"]
-DB_HOST = environ["POSTGRES_HOST"]
-DB_PORT = environ["POSTGRES_PORT"]
-DB_NAME = environ["POSTGRES_DB"]
+
+USE_K8S=environ["USE_K8S"]
+
+DOMAIN_NGINX=environ["DOMAIN_NGINX"]
+DOMAIN_LOCALHOST=environ["DOMAIN_LOCALHOST"]
+
+DB_USER = environ["POSTGRES_USER_SCRAPER"]
+DB_PASSWORD = environ["POSTGRES_PASSWORD_SCRAPER"]
+DB_HOST = environ["POSTGRES_HOST_SCRAPER_FASTAPI"]
+DB_PORT = environ["POSTGRES_PORT_SCRAPER"]
+DB_NAME = environ["POSTGRES_DB_SCRAPER"]
 DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 RMQ_HOST = environ["RMQ_HOST"]

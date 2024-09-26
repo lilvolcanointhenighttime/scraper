@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from starlette.responses import RedirectResponse, Response
 
-from .config.env import GITHUB_CLINET_ID, GITHUB_CLINET_SECRET
+from .config.env import GITHUB_CLINET_ID, GITHUB_CLINET_SECRET, DOMAIN_LOCALHOST, USE_K8S
 from .utils import async_query_post, async_query_get
 from .jwt import create_access_token
 from .repository import UserRepository
@@ -15,7 +15,7 @@ github_router = APIRouter(prefix="/github-oauth", tags=["Github-OAuth"])
 @cookie_router.get("/create")
 async def create_cookie(id: int):
     access_token = create_access_token({"sub": str(id)})
-    response = RedirectResponse(url="http://localhost/pages/login.html")
+    response = RedirectResponse(url=f"http://{DOMAIN_LOCALHOST}/pages/login.html")
     response.set_cookie(key="users_access_token", value=access_token, httponly=True)
     return response
 
@@ -55,7 +55,6 @@ async def github_code(code: str):
     }
 
     response = await async_query_post(session=aiohttp_clientsession, headers=headers,url="https://github.com/login/oauth/access_token", params=params)
-    print(response)
     access_token = response ["access_token"]
     headers.update({"Authorization": f"Bearer {access_token}"})
 
@@ -70,5 +69,4 @@ async def github_code(code: str):
         pass
     else:
         await UserRepository.add(user)
-    return RedirectResponse(f"http://localhost/api/oauth/cookie/create?id={user["id"]}")
-
+    return RedirectResponse(f"http://{DOMAIN_LOCALHOST}/api/oauth/cookie/create?id={user["id"]}")

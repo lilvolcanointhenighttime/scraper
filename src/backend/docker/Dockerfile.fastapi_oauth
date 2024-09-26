@@ -5,7 +5,7 @@ LABEL name="fastapi_oauth"
 WORKDIR .
 RUN mkdir /src
 
-COPY ./src/backend/oauth/config/req.txt /src/req.txt
-RUN python -m pip install -r ./src/req.txt
+COPY ./src/backend/oauth/config/req.txt /src/oauth/req.txt
+RUN python -m pip install -r ./src/oauth/req.txt
 
-COPY ./src/backend/oauth /src/
+COPY ./src/backend/oauth /src/oauth/

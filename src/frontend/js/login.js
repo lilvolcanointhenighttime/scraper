@@ -1,11 +1,11 @@
 
 async function loginWithGitHub() {
-    window.location.href = "http://localhost:80/api/oauth/github-oauth/login";
+    window.location.href = "http://yourhost.example/api/oauth/github-oauth/login";
 }
 
 async function getCurrentUser() {
     var userInfo = document.getElementById('user-info');
-    const response1 = await fetch('http://localhost:80/api/oauth/cookie/me', {
+    const response1 = await fetch('http://yourhost.example/api/oauth/cookie/me', {
         method: 'POST',
         credentials: 'include'
     });
@@ -28,7 +28,7 @@ async function getCurrentUser() {
     else {
         userInfo.innerText = 'User not logged in';
     }
-    const response2 = await fetch('http://localhost:80/api/scraper/user/me', {
+    const response2 = await fetch('http://yourhost.example/api/scraper/user/me', {
         method: 'POST',
         credentials: 'include'
     });
@@ -36,14 +36,14 @@ async function getCurrentUser() {
 
 async function logout() {
     var userInfo = document.getElementById('user-info');
-    const me_response = await fetch('http://localhost:80/api/oauth/cookie/me', {
+    const me_response = await fetch('http://yourhost.example/api/oauth/cookie/me', {
         method: 'POST',
         credentials: 'include'
     });
     if (!me_response.ok) {
         userInfo.innerText = 'User not logged in!'
     } else {
-        const response = await fetch('http://localhost:80/api/oauth/cookie/logout', {
+        const response = await fetch('http://yourhost.example/api/oauth/cookie/logout', {
         method: 'POST',
         credentials: 'include'
     });

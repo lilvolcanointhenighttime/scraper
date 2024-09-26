@@ -5,7 +5,7 @@ LABEL name="fastapi_scraper"
 WORKDIR .
 RUN mkdir /src
 
-COPY ./src/backend/scraper/config/req.txt /src/req.txt
-RUN python -m pip install -r ./src/req.txt
+COPY ./src/backend/scraper/config/req.txt /src/scraper/req.txt
+RUN python -m pip install -r ./src/scraper/req.txt
 
-COPY ./src/backend/scraper /src/
+COPY ./src/backend/scraper /src/scraper/

@@ -26,7 +26,7 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
   };
 
 var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'http://localhost:80/api/scraper/hh/resumes', true);
+  xhr.open('POST', 'http://yourhost.example/api/scraper/hh/resumes', true);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) { // Запрос завершен
@@ -92,7 +92,7 @@ function handleError(status, responseText) {
   console.error('Ошибка запроса:', status, responseText);
   if (status == 401) {
     alert('Пользователь не авторизован!');
-    window.location.href = 'http://localhost/pages/login.html'
+    window.location.href = 'http://yourhost.example/pages/login.html'
   } else {
     alert('Произошла ошибка при выполнении запроса. Код ошибки: ' + status);
   }

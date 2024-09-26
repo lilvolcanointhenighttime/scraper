@@ -1,7 +1,6 @@
 from typing import Annotated, Any
 from sqlalchemy import String, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 
 from datetime import datetime

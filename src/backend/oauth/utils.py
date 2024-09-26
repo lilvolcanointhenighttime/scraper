@@ -1,6 +1,4 @@
 import aiohttp
-# import pika
-# import json
 import functools
 import asyncio
 
@@ -9,8 +7,6 @@ from datetime import datetime, timezone
 
 from fastapi import HTTPException, status, Depends
 
-# from .config.rmq_config import get_connection
-# from .config.env import MQ_EXCHANGE, MQ_ROUTING_KEY
 from .jwt import get_token, get_auth_data
 from .repository import UserRepository
 
@@ -54,24 +50,4 @@ async def get_current_user(token: str = Depends(get_token)) -> dict:
 
     return user
 
-
-# def publish_rmq(data: dict) -> None:
-    
-#     with get_connection() as connection:
-#         with connection.channel() as channel:
-
-#             exchange_name = MQ_EXCHANGE
-#             routing_key = MQ_ROUTING_KEY
-
-#             # This will create the exchange if it doesn't already exist.
-#             channel.exchange_declare(exchange=exchange_name, exchange_type='topic', durable=True)
-#             channel.basic_publish(exchange=exchange_name,
-#                                 routing_key=routing_key,
-#                                 body=json.dumps(data),
-#                                 # Delivery mode 2 makes the broker save the message to disk.
-#                                 # This will ensure that the message be restored on reboot even  
-#                                 # if RabbitMQ crashes before having forwarded the message.
-#                                 properties=pika.BasicProperties(
-#                                     delivery_mode = 2,
-#                                 ))
             
