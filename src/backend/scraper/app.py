@@ -1,3 +1,4 @@
+import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import aiohttp
@@ -34,6 +35,10 @@ app.add_middleware(
 
 app.include_router(hh_router)
 app.include_router(user_router)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app='app:app', host="0.0.0.0", port=8000, reload=True, debug=True)
 
 
 

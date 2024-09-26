@@ -5,10 +5,11 @@ import asyncio
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
+from fastapi import HTTPException, Request, status
 
 from .repository import UserRepository
+from .config.env import USE_K8S, DOMAIN_NGINX
 
-from fastapi import HTTPException, Request, status
 
 # urls
 hh_vacancies_url = 'https://api.hh.ru/vacancies?clusters=true'
@@ -29,7 +30,10 @@ async def get_current_user(request: Request):
     from .app import aiohttp_clientsession
     token = request.cookies.get('users_access_token')
     params = {"token": token}
-    user_data = await async_query_post(session=aiohttp_clientsession, url="http://nginx/api/oauth/cookie/rmq-me", params=params)
+    if USE_K8S:
+        user_data = await async_query_post(session=aiohttp_clientsession, url=f"http://fastapi-oauth:8800/api/oauth/cookie/rmq-me", params=params)
+    else:
+        user_data = await async_query_post(session=aiohttp_clientsession, url=f"http://{DOMAIN_NGINX}/api/oauth/cookie/rmq-me", params=params)
     if user_data == {'detail': 'Token not found'} or user_data == {'detail': 'Not Found'} or user_data == {'detail': 'User not found'}:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='User not authenticated')
     

@@ -36,7 +36,8 @@ services:
     build:
       context: .
       dockerfile: ./src/backend/docker/Dockerfile.fastapi_scraper
-    command: 'uvicorn src.app:app --host=0.0.0.0 --port=8000'
+    command: >
+      sh -c "cd ./src && uvicorn scraper.app:app --host=0.0.0.0 --port=8000"
     depends_on:
       - pg_scraper
     restart: always
@@ -45,7 +46,7 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USER_SCRAPER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_SCRAPER}
-      - POSTGRES_HOST=${POSTGRES_HOST_SCRAPER_FASTAPI}
+      - POSTGRES_HOST_SCRAPER_FASTAPI=${POSTGRES_HOST_SCRAPER_FASTAPI}
       - POSTGRES_PORT=${POSTGRES_PORT_SCRAPER}
       - POSTGRES_DB=${POSTGRES_DB_SCRAPER}
     expose:
@@ -56,7 +57,8 @@ services:
     build:
       context: .
       dockerfile: ./src/backend/docker/Dockerfile.fastapi_oauth
-    command: 'uvicorn src.app:app --host=0.0.0.0 --port=8800'
+    command: >
+      sh -c "cd ./src && uvicorn oauth.app:app --host=0.0.0.0 --port=8800"
     depends_on:
       - pg_oauth
     restart: always
@@ -65,7 +67,7 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USER_OAUTH}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_OAUTH}
-      - POSTGRES_HOST=${POSTGRES_HOST_OAUTH_FASTAPI}
+      - POSTGRES_HOST_OAUTH_FASTAPI=${POSTGRES_HOST_OAUTH_FASTAPI}
       - POSTGRES_PORT=${POSTGRES_PORT_OAUTH}
       - POSTGRES_DB=${POSTGRES_DB_OAUTH}
       - GITHUB_CLINET_ID=${GITHUB_CLINET_ID}
@@ -73,19 +75,21 @@ services:
     expose:
       - 8800
 
+
   fastapi_oauth_consumer:
     container_name: fastapi_oauth_consumer
     build:
       context: .
       dockerfile: ./src/backend/docker/Dockerfile.fastapi_oauth
-    command: 'python -u -m src.consumer'
+    command: >
+      sh -c "cd ./src && python -u -m oauth.consumer"
     restart: always
     env_file:
       - .env
     environment:
       - POSTGRES_USER=${POSTGRES_USER_OAUTH}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_OAUTH}
-      - POSTGRES_HOST=${POSTGRES_HOST_OAUTH_FASTAPI}
+      - POSTGRES_HOST_OAUTH_FASTAPI=${POSTGRES_HOST_OAUTH_FASTAPI}
       - POSTGRES_PORT=${POSTGRES_PORT_OAUTH}
       - POSTGRES_DB=${POSTGRES_DB_OAUTH}
       - GITHUB_CLINET_ID=${GITHUB_CLINET_ID}
@@ -96,14 +100,15 @@ services:
     build:
       context: .
       dockerfile: ./src/backend/docker/Dockerfile.fastapi_scraper
-    command: 'python -u -m src.consumer'
+    command: >
+      sh -c "cd ./src && python -u -m scraper.consumer"
     restart: always
     env_file:
       - .env
     environment:
       - POSTGRES_USER=${POSTGRES_USER_SCRAPER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_SCRAPER}
-      - POSTGRES_HOST=${POSTGRES_HOST_SCRAPER_FASTAPI}
+      - POSTGRES_HOST_SCRAPER_FASTAPI=${POSTGRES_HOST_SCRAPER_FASTAPI}
       - POSTGRES_PORT=${POSTGRES_PORT_SCRAPER}
       - POSTGRES_DB=${POSTGRES_DB_SCRAPER}
     depends_on:

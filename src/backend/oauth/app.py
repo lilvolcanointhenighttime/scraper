@@ -1,12 +1,10 @@
+import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import aiohttp
 from .routers import github_router, cookie_router
 from .config.database import create_tables, drop_tables
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
-# from starlette.middleware.cors import CORSMiddleware
-
 
 aiohttp_clientsession: aiohttp.ClientSession = None
 
@@ -38,12 +36,10 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
     allow_headers=["Content-Type", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers"],
 )
-# app.add_middleware(HTTPSRedirectMiddleware)
 
 
 app.include_router(github_router)
 app.include_router(cookie_router)
 
-
-
-
+if __name__ == "__main__":
+    uvicorn.run(app='app:app', host="0.0.0.0", port=8800, reload=True, debug=True)
