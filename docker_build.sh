@@ -1,12 +1,6 @@
 bash
 #!/bin/sh
 
-minikube image load praktika_leto-fastapi_scraper:latest
-minikube image load praktika_leto-fastapi_oauth:latest
-minikube image load praktika_leto-nodejs:latest
-minikube image load praktika_leto-nginx:latest
-minikube image load postgres:latest
-minikube image load rabbitmq:3-management-alpine
 
 declare -A docker_images
 docker_images=(
